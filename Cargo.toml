@@ -1,6 +1,15 @@
 [package]
 name = "mqtt-reeze"
 version = "0.1.0"
+
+authors = ["Chris West (Faux) <git@goeswhere.com>"]
+description = "Simplified MQTT client"
+repository = "https://github.com/FauxFaux/mqtt-reeze"
+#readme = "README.md"
+
+categories = ["network-programming"]
+license = "MIT OR Apache-2.0"
+
 edition = "2021"
 
 [dependencies]
