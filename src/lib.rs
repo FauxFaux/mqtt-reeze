@@ -52,14 +52,19 @@ impl Mqtt {
         Self::new(mqtt_opts, 1024)
     }
 
-    pub async fn publish_json(&mut self, topic: &Topic, payload: impl Serialize) -> Result<()> {
+    pub async fn publish_json(&self, topic: &Topic, payload: impl Serialize) -> Result<()> {
         self.client
-            .publish(&topic.name, topic.qos, topic.retain, serde_json::to_vec(&payload)?)
+            .publish(
+                &topic.name,
+                topic.qos,
+                topic.retain,
+                serde_json::to_vec(&payload)?,
+            )
             .await
             .context("publishing to mqtt")
     }
 
-    pub async fn publish(&mut self, topic: &Topic, payload: impl Into<Vec<u8>>) -> Result<()> {
+    pub async fn publish(&self, topic: &Topic, payload: impl Into<Vec<u8>>) -> Result<()> {
         self.client
             .publish(&topic.name, topic.qos, topic.retain, payload)
             .await
