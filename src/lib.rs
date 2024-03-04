@@ -49,6 +49,7 @@ impl Mqtt {
         let keep_alive = env_parse_or("MQTT_KEEP_ALIVE_SECS", 15)?;
         let mut mqtt_opts = MqttOptions::new(id, host, port);
         mqtt_opts.set_keep_alive(Duration::from_secs(keep_alive));
+        mqtt_opts.set_max_packet_size(10 * 1024 * 1024, 10 * 1024 * 1024); // 10 * MB
         Self::new(mqtt_opts, 1024)
     }
 
