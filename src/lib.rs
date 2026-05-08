@@ -4,7 +4,7 @@ use std::time::Duration;
 
 pub use rumqttc::{MqttOptions, QoS};
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 use log::{info, trace, warn};
 use rumqttc::ConnectionError::MqttState;
 use rumqttc::{Event, EventLoop, Incoming, Outgoing, StateError};
@@ -24,9 +24,9 @@ pub struct Topic {
 }
 
 impl Topic {
-    pub fn new(name: impl AsRef<str>, qos: QoS, retain: bool) -> Self {
+    pub fn new(name: impl Into<String>, qos: QoS, retain: bool) -> Self {
         Self {
-            name: name.as_ref().to_owned(),
+            name: name.into(),
             qos,
             retain,
         }
@@ -130,8 +130,10 @@ async fn log_for_loop(mut ev: EventLoop) {
             Ok(Event::Incoming(Incoming::Disconnect)) if disconnecting => break,
             // mosquitto appears to just drop the connection, generating a:
             // MqttState(Io(Custom { kind: ConnectionAborted, error: "connection closed by peer" }))
-            Err(MqttState(StateError::Io(e))) if disconnecting => {
-                warn!("connection error during broker disconnect, assuming intention was to disconnect: {e:?}");
+            Err(MqttState(StateError::ConnectionAborted)) if disconnecting => {
+                warn!(
+                    "connection aborted during broker disconnect, assuming intention was to disconnect"
+                );
                 break;
             }
             Ok(some) if state == State::ErrPrinted => {
