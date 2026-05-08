@@ -1,6 +1,6 @@
 [package]
 name = "mqtt-reeze"
-version = "0.2.0"
+version = "0.3.0"
 
 authors = ["Chris West (Faux) <git@goeswhere.com>"]
 description = "Simplified MQTT client"
